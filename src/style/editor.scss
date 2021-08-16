@@ -1,0 +1,52 @@
+.editor {
+  position: relative;
+  height: 100%;
+  // 菜单编辑区
+  header {
+    height: 100px;
+    position: absolute;
+    left: 310px;
+    right: 310px;
+    background-color: #ccc;
+    // width: 100%;
+    // padding: 0 310px;
+    // box-sizing: border-box;
+  }
+  aside,
+  section {
+    position: absolute;
+    top: 0;
+    background-color: red;
+    width: 300px;
+    height: 100%;
+  }
+  // 左侧物料区
+  aside {
+    left: 0;
+    position: relative;
+    .editor-block {
+      position: absolute;
+      height: 150px;
+      margin-bottom: 20px;
+      background-color: #ccc;
+    }
+  }
+  // 属性控制栏
+  section {
+    position: absolute;
+    right: 0;
+  }
+  main {
+    padding: 100px 310px 0;
+    box-sizing: border-box;
+    height: 100%;
+    .editor-canvas {
+      height: 100%;
+      overflow: auto;
+      &__content {
+        margin: 20px auto;
+        background-color: yellow;
+      }
+    }
+  }
+}

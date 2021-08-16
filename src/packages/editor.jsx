@@ -1,10 +1,45 @@
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue';
+import EditorBlock from './editor-block';
 
 export default defineComponent({
-  setup () {
-    return () => <div class="editor">
-      editor
+  props: { modelValue: Object },
+  emits: ['update:modelValue'],
+  components: { EditorBlock },
+  setup(props, { emit }) {
+    let data = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(val) {
+        emit('update:modelValue', val);
+      }
+    });
 
-    </div>
+    const contentStyle = computed(() => {
+      return {
+        width: data.value.container.width + 'px',
+        height: data.value.container.height + 'px'
+      };
+    });
+
+    return () => (
+      <div class='editor'>
+        <header>菜单编辑区</header>
+        <aside>
+          {data.value.blocks.map(block => (
+            <EditorBlock block={block} />
+          ))}
+        </aside>
+        <section>属性控制栏</section>
+        <main>
+          {/* 产生滚动条 */}
+          <div class='editor-canvas'>
+            <div class='editor-canvas__content' style={contentStyle.value}>
+              内容去
+            </div>
+          </div>
+        </main>
+      </div>
+    );
   }
-})
+});

@@ -1,5 +1,5 @@
 <template>
-  <Editor id="root" />
+  <Editor v-model="source" />
 </template>
 
 <script>
@@ -12,6 +12,7 @@ export default {
   components: { Editor },
   setup() {
     const source = ref(data);
+
     return {
       source
     };
