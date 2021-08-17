@@ -16,19 +16,30 @@
   section {
     position: absolute;
     top: 0;
-    background-color: red;
     width: 300px;
     height: 100%;
   }
   // 左侧物料区
   aside {
     left: 0;
-    position: relative;
-    .editor-block {
-      position: absolute;
-      height: 150px;
-      margin-bottom: 20px;
-      background-color: #ccc;
+    .editor-item {
+      width: 250px;
+      min-height: 100px;
+      margin: 20px auto;
+      padding: 30px;
+      box-sizing: border-box;
+      background-color: rgb(248, 244, 244);
+      position: relative;
+      cursor: move;
+      user-select: none;
+      border: 1px solid #48a4f7;
+      &-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: aqua;
+        color: #fff;
+      }
     }
   }
   // 属性控制栏
@@ -44,8 +55,13 @@
       height: 100%;
       overflow: auto;
       &__content {
+        position: relative;
         margin: 20px auto;
         background-color: yellow;
+        .editor-block {
+          user-select: none;
+          position: absolute;
+        }
       }
     }
   }

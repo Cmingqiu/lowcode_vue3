@@ -1,6 +1,4 @@
-import { computed, defineComponent } from 'vue';
-import editorConfig from '../utils/editor-config';
-
+import { computed, defineComponent, inject } from 'vue';
 export default defineComponent({
   props: { block: Object }, //{  "top": 100, "left": 100, "zIndex": 1, "key": "text" }
   setup(props) {
@@ -10,12 +8,13 @@ export default defineComponent({
       zIndex: props.block.zIndex
     }));
 
-    const component = editorConfig.componentMap[props.block.key];
-    const previewComponent = component.preview();
+    const config = inject('config');
+
+    const component = config.componentMap[props.block.key];
+    const renderComponent = component.render();
     return () => (
-      <div class='editor-block' style={blockStyle.value}>
-        <span>{component.label}</span>
-        {previewComponent}
+      <div class='editor-block shade-mask' style={blockStyle.value}>
+        {renderComponent}
       </div>
     );
   }

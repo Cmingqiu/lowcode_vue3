@@ -1,8 +1,8 @@
 import { ElButton, ElInput } from 'element-plus';
 
 function createEditorConfig() {
-  let componentList = [];
-  let componentMap = {};
+  let componentList = []; //用来渲染左侧预览图
+  let componentMap = {}; //key 和 component映射，根据key渲染component
   return {
     componentList,
     componentMap,

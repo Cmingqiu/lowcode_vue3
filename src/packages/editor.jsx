@@ -1,11 +1,14 @@
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
+import { ondragenter } from '../utils/drag';
 import EditorBlock from './editor-block';
+import EditorItem from './editor-item';
 
 export default defineComponent({
   props: { modelValue: Object },
   emits: ['update:modelValue'],
-  components: { EditorBlock },
+  components: { EditorBlock, EditorItem },
   setup(props, { emit }) {
+    const containerRef = ref(null);
     let data = computed({
       get() {
         return props.modelValue;
@@ -26,16 +29,20 @@ export default defineComponent({
       <div class='editor'>
         <header>菜单编辑区</header>
         <aside>
-          {data.value.blocks.map(block => (
-            <EditorBlock block={block} />
-          ))}
+          <EditorItem containerRef={containerRef} />
         </aside>
         <section>属性控制栏</section>
         <main>
           {/* 产生滚动条 */}
           <div class='editor-canvas'>
-            <div class='editor-canvas__content' style={contentStyle.value}>
-              内容去
+            <div
+              class='editor-canvas__content'
+              style={contentStyle.value}
+              ref={containerRef}
+            >
+              {data.value.blocks.map((block) => (
+                <EditorBlock block={block} />
+              ))}
             </div>
           </div>
         </main>
