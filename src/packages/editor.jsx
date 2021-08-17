@@ -1,7 +1,6 @@
 import { computed, defineComponent, ref } from 'vue';
-import { ondragenter } from '../utils/drag';
-import EditorBlock from './editor-block';
 import EditorItem from './editor-item';
+import EditorBlock from './editor-block';
 
 export default defineComponent({
   props: { modelValue: Object },
@@ -40,7 +39,7 @@ export default defineComponent({
               style={contentStyle.value}
               ref={containerRef}
             >
-              {data.value.blocks.map((block) => (
+              {data.value.blocks.map(block => (
                 <EditorBlock block={block} />
               ))}
             </div>

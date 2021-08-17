@@ -1,34 +1,59 @@
-export function dragstart(e, component, target) {
-  target.value.addEventListener('dragenter', dragenter);
-  target.value.addEventListener('dragover', dragover);
-  target.value.addEventListener('drop', drop.bind(null, component));
-  target.value.addEventListener('dragleave', dragleave);
-}
+export default function useDrag(containerRef, data) {
+  let currentComponent = null;
 
-// 拖动进入目标元素的时候
-export function dragenter(e) {
-  e.dataTransfer.dropEffect = 'move';
-}
+  const dragstart = (e, component) => {
+    currentComponent = component;
+    containerRef.value.addEventListener('dragenter', dragenter);
+    containerRef.value.addEventListener('dragover', dragover);
+    containerRef.value.addEventListener('drop', drop);
+    containerRef.value.addEventListener('dragleave', dragleave);
+  };
 
-//经过目标元素的时候，阻止默认事件，不然ondrop事件不触发
-export function dragover(e) {
-  e.preventDefault();
-}
+  // 拖动进入目标元素的时候
+  const dragenter = e => {
+    e.dataTransfer.dropEffect = 'move';
+  };
 
-//拖拽元素松开时候 根据拖拽元素添加一个组件
-export function drop(component) {
-  console.log('drop', component);
-}
+  //经过目标元素的时候，阻止默认事件，不然ondrop事件不触发
+  const dragover = e => {
+    e.preventDefault();
+  };
 
-//离开目标元素 增加禁用标识
-export function dragleave(e, target) {
-  e.dataTransfer.dropEffect = 'none';
-}
+  //拖拽元素松开时候 根据拖拽元素添加一个组件
+  const drop = e => {
+    let { blocks } = data.value;
+    data.value = {
+      ...data.value,
+      blocks: [
+        ...blocks,
+        ,
+        {
+          left: e.offsetX,
+          top: e.offsetY,
+          zIndex: 1,
+          key: currentComponent.key,
+          alignCenter: true // 希望松手的时候你可以居中
+        }
+      ]
+    };
+    currentComponent = null;
+  };
 
-// 取消目标元素的事件绑定
-export function dragend(e, target) {
-  target.value.removeEventListener('dragenter', dragenter);
-  target.value.removeEventListener('dragover', dragover);
-  target.value.removeEventListener('drop', drop);
-  target.value.removeEventListener('dragleave', dragleave);
+  //离开目标元素 增加禁用标识
+  const dragleave = (e, target) => {
+    e.dataTransfer.dropEffect = 'none';
+  };
+
+  // 取消目标元素的事件绑定
+  const dragend = e => {
+    containerRef.value.removeEventListener('dragenter', dragenter);
+    containerRef.value.removeEventListener('dragover', dragover);
+    containerRef.value.removeEventListener('drop', drop);
+    containerRef.value.removeEventListener('dragleave', dragleave);
+  };
+
+  return {
+    dragstart,
+    dragend
+  };
 }

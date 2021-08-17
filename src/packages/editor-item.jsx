@@ -1,20 +1,21 @@
 import { defineComponent, inject } from 'vue';
-import { dragstart, dragend } from '../utils/drag';
+import useDrag from '../utils/drag';
 
 export default defineComponent({
-  props: ['containerRef'],
+  props: ['containerRef', 'data'],
   setup(props) {
     const config = inject('config');
+    const { dragstart, dragend } = useDrag(props.containerRef, props.data);
 
     return () =>
-      config.componentList.map((component) => (
+      config.componentList.map(component => (
         <div
           class='editor-item shade-mask'
           draggable
-          ondragstart={(e) => {
-            dragstart(e, component, props.containerRef);
+          ondragstart={e => {
+            dragstart(e, component);
           }}
-          ondragend={(e) => dragend(e, props.containerRef)}
+          ondragend={dragend}
         >
           <span class='editor-item-label '>{component.label}</span>
           {component.preview()}
