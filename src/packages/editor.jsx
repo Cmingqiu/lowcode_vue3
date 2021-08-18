@@ -1,6 +1,8 @@
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, inject, ref } from 'vue';
+import deepcopy from 'deepcopy';
 import EditorItem from './editor-item';
 import EditorBlock from './editor-block';
+import useDrag from '../utils/drag';
 
 export default defineComponent({
   props: { modelValue: Object },
@@ -8,15 +10,17 @@ export default defineComponent({
   components: { EditorBlock, EditorItem },
   setup(props, { emit }) {
     const containerRef = ref(null);
-    let data = computed({
+    const config = inject('config');
+    const data = computed({
       get() {
         return props.modelValue;
       },
       set(val) {
-        emit('update:modelValue', val);
+        emit('update:modelValue', deepcopy(val));
       }
     });
 
+    const { dragstart, dragend } = useDrag(containerRef, data);
     const contentStyle = computed(() => {
       return {
         width: data.value.container.width + 'px',
@@ -28,7 +32,19 @@ export default defineComponent({
       <div class='editor'>
         <header>菜单编辑区</header>
         <aside>
-          <EditorItem containerRef={containerRef} />
+          {config.componentList.map(component => (
+            <div
+              class='editor-item shade-mask'
+              draggable
+              ondragstart={e => {
+                dragstart(e, component);
+              }}
+              ondragend={dragend}
+            >
+              <span class='editor-item-label '>{component.label}</span>
+              {component.preview()}
+            </div>
+          ))}
         </aside>
         <section>属性控制栏</section>
         <main>

@@ -26,7 +26,6 @@ export default function useDrag(containerRef, data) {
       ...data.value,
       blocks: [
         ...blocks,
-        ,
         {
           left: e.offsetX,
           top: e.offsetY,
