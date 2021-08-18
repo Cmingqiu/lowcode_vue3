@@ -61,6 +61,22 @@
         .editor-block {
           user-select: none;
           position: absolute;
+          &-focus::after {
+            border: 2px solid #f00;
+          }
+        }
+        .mark-line-x,
+        .mark-line-x {
+          position: absolute;
+          background-color: #ff0000;
+        }
+        .mark-line-x {
+          width: 100%;
+          height: 1px;
+        }
+        .mark-line-y {
+          height: 100%;
+          width: 1px;
         }
       }
     }

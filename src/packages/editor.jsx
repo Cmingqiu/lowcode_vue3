@@ -1,13 +1,14 @@
 import { computed, defineComponent, inject, ref } from 'vue';
 import deepcopy from 'deepcopy';
-import EditorItem from './editor-item';
 import EditorBlock from './editor-block';
 import useDrag from '../utils/drag';
+import useFocus from '../utils/useFocus';
+import useBlockDrag from '../utils/useBlockDrag';
 
 export default defineComponent({
   props: { modelValue: Object },
   emits: ['update:modelValue'],
-  components: { EditorBlock, EditorItem },
+  components: { EditorBlock },
   setup(props, { emit }) {
     const containerRef = ref(null);
     const config = inject('config');
@@ -19,14 +20,26 @@ export default defineComponent({
         emit('update:modelValue', deepcopy(val));
       }
     });
-
-    const { dragstart, dragend } = useDrag(containerRef, data);
     const contentStyle = computed(() => {
       return {
         width: data.value.container.width + 'px',
         height: data.value.container.height + 'px'
       };
     });
+
+    //1.物料拖拽
+    const { dragstart, dragend } = useDrag(containerRef, data);
+    //2.组件获取焦点
+    const {
+      blockMouseDown,
+      clearBlockFocus,
+      focusData,
+      lastSelectBlock
+    } = useFocus(data, e => {
+      blockDrag(e);
+    });
+    //3.组件拖拽
+    const { blockDrag, markLine } = useBlockDrag(focusData, lastSelectBlock);
 
     return () => (
       <div class='editor'>
@@ -54,10 +67,22 @@ export default defineComponent({
               class='editor-canvas__content'
               style={contentStyle.value}
               ref={containerRef}
+              onmousedown={e => clearBlockFocus()}
             >
-              {data.value.blocks.map(block => (
-                <EditorBlock block={block} />
+              {data.value.blocks.map((block, index) => (
+                <EditorBlock
+                  class={[block.focus ? 'editor-block-focus' : '']}
+                  block={block}
+                  onmousedown={e => blockMouseDown(e, block, index)}
+                />
               ))}
+
+              {markLine.x !== null && (
+                <div class='mark-line-x' style={{ left: markLine.x + 'px' }} />
+              )}
+              {markLine.y !== null && (
+                <div class='mark-line-y' style={{ top: markLine.y + 'px' }} />
+              )}
             </div>
           </div>
         </main>

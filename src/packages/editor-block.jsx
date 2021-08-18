@@ -15,12 +15,15 @@ export default defineComponent({
 
     onMounted(() => {
       //居中渲染拖入的组件
+      const { offsetWidth, offsetHeight } = blockRef.value;
       if (props.block.alignCenter) {
-        const { offsetWidth, offsetHeight } = blockRef.value;
         props.block.left -= offsetWidth / 2;
         props.block.top -= offsetHeight / 2;
         props.block.alignCenter = false;
       }
+      //加上width 和height
+      props.block.width = offsetWidth;
+      props.block.height = offsetHeight;
     });
 
     return () => (
