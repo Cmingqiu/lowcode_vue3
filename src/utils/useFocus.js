@@ -18,7 +18,6 @@ export default function useFocus(data, cb) {
   const blockMouseDown = (e, block, index) => {
     e.preventDefault();
     e.stopPropagation();
-    selectIndex.value = index;
 
     if (!block.focus) {
       if (!e.ctrlKey) clearBlockFocus(); //如果按了ctrl键就不清除
@@ -26,6 +25,7 @@ export default function useFocus(data, cb) {
     } else {
       // block.focus = false;
     }
+    selectIndex.value = index;
     cb && cb(e);
   };
 
@@ -37,8 +37,8 @@ export default function useFocus(data, cb) {
 
   return {
     focusData,
-    lastSelectBlock,
     blockMouseDown,
-    clearBlockFocus
+    clearBlockFocus,
+    lastSelectBlock
   };
 }

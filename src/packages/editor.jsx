@@ -4,6 +4,7 @@ import EditorBlock from './editor-block';
 import useDrag from '../utils/drag';
 import useFocus from '../utils/useFocus';
 import useBlockDrag from '../utils/useBlockDrag';
+import useCommand from '../utils/useCommand';
 
 export default defineComponent({
   props: { modelValue: Object },
@@ -35,15 +36,40 @@ export default defineComponent({
       clearBlockFocus,
       focusData,
       lastSelectBlock
-    } = useFocus(data, e => {
-      blockDrag(e);
-    });
+    } = useFocus(data, e => blockDrag(e));
     //3.组件拖拽
-    const { blockDrag, markLine } = useBlockDrag(focusData, lastSelectBlock);
+    const { blockDrag, markLine } = useBlockDrag(
+      focusData,
+      lastSelectBlock,
+      data
+    );
+    //4.撤销还原
+    const { commands } = useCommand(data);
+
+    const buttons = [
+      {
+        label: '撤销',
+        class: 'icon-back',
+        handle: commands.undo
+      },
+      {
+        label: '还原',
+        class: 'icon-back restore',
+        handle: commands.redo
+      }
+    ];
 
     return () => (
       <div class='editor'>
-        <header>菜单编辑区</header>
+        <header>
+          {buttons.map(btn => (
+            <i
+              title={btn.label}
+              class={['editor-btns', btn.class]}
+              onclick={btn.handle}
+            />
+          ))}
+        </header>
         <aside>
           {config.componentList.map(component => (
             <div
@@ -59,7 +85,7 @@ export default defineComponent({
             </div>
           ))}
         </aside>
-        <section>属性控制栏</section>
+        <section>属性控制区</section>
         <main>
           {/* 产生滚动条 */}
           <div class='editor-canvas'>

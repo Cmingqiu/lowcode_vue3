@@ -1,6 +1,6 @@
 import { computed, defineComponent, inject, onMounted, ref } from 'vue';
 export default defineComponent({
-  props: { block: Object }, //{  "top": 100, "left": 100, "zIndex": 1, "key": "text" }
+  props: { block: Object }, //{  "top": 100, "left": 100, "zIndex": 1, "key": "text",width,height }
   setup(props) {
     const config = inject('config');
     const blockRef = ref(null);

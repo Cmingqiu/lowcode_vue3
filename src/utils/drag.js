@@ -1,3 +1,5 @@
+import events from './event';
+
 export default function useDrag(containerRef, data) {
   let currentComponent = null;
 
@@ -7,6 +9,7 @@ export default function useDrag(containerRef, data) {
     containerRef.value.addEventListener('dragover', dragover);
     containerRef.value.addEventListener('drop', drop);
     containerRef.value.addEventListener('dragleave', dragleave);
+    events.emit('start');
   };
 
   // 拖动进入目标元素的时候
@@ -49,6 +52,7 @@ export default function useDrag(containerRef, data) {
     containerRef.value.removeEventListener('dragover', dragover);
     containerRef.value.removeEventListener('drop', drop);
     containerRef.value.removeEventListener('dragleave', dragleave);
+    events.emit('end');
   };
 
   return {
