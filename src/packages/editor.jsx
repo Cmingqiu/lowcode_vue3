@@ -60,18 +60,22 @@ export default defineComponent({
       },
       {
         label: '导入',
-        class: 'icon-back',
+        class: 'icon-import',
         handle: () => {
           $dialog({
             title: '导入json使用',
             content: '',
-            footer: true
+            footer: true,
+            confirm(text) {
+              //data.value = text  //没有撤销还原操作
+              commands.updateContainer(JSON.parse(text));
+            }
           });
         }
       },
       {
         label: '导出',
-        class: 'icon-back',
+        class: 'icon-export',
         handle: () => {
           $dialog({
             title: '导出json使用',

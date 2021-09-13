@@ -17,6 +17,15 @@ const DialogComponent = defineComponent({
         state.option = option;
       }
     });
+
+    const onCancel = () => {
+      state.isShow = false;
+    };
+    const onConfirm = () => {
+      state.isShow = false;
+      state.option.confirm && state.option.confirm(state.option.content);
+    };
+
     return () => {
       /* vue3中的插槽都是函数 */
       return (
@@ -32,10 +41,10 @@ const DialogComponent = defineComponent({
             footer: () =>
               state.option.footer && (
                 <div>
-                  <ElButton type='primary' onclick={confirm}>
+                  <ElButton type='primary' onclick={onConfirm}>
                     确定
                   </ElButton>
-                  <ElButton onclick={cancel}>取消</ElButton>
+                  <ElButton onclick={onCancel}>取消</ElButton>
                 </div>
               )
           }}

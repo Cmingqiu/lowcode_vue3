@@ -2,6 +2,8 @@ import deepcopy from 'deepcopy';
 import { onUnmounted } from 'vue';
 import events from './event';
 
+//带有历史记录的功能常用这种注册模式
+
 export default function useCommand(data) {
   const state = {
     current: -1, //当前指针 前进后退的索引
@@ -13,8 +15,8 @@ export default function useCommand(data) {
 
   const register = command => {
     //命令name对应执行函数
-    state.commands[command.name] = () => {
-      const { redo, undo } = command.execute();
+    state.commands[command.name] = (...args) => {
+      const { redo, undo } = command.execute(...args);
       redo(); //走下一步
       if (!command.pushQueue) return;
 
@@ -37,7 +39,7 @@ export default function useCommand(data) {
       return {
         redo() {
           if (state.current === -1) return;
-          const item = state.queue[state.current]; //没有操作queue
+          const item = state.queue[state.current]; //这里没有操作queue
           if (item) {
             item.undo && item.undo();
             state.current--;
@@ -87,11 +89,30 @@ export default function useCommand(data) {
       const before = this.before;
       const after = data.value.blocks;
       return {
-        redo() {
-          data.value = { ...data.value, blocks: after }; //前进
-        },
         undo() {
           data.value = { ...data.value, blocks: before }; //后退
+        },
+        redo() {
+          data.value = { ...data.value, blocks: after }; //前进
+        }
+      };
+    }
+  });
+
+  register({
+    name: 'updateContainer',
+    pushQueue: true,
+    execute(newVal) {
+      const before = data.value;
+      const after = newVal;
+      return {
+        //上一步
+        undo() {
+          data.value = before;
+        },
+        //下一步
+        redo() {
+          data.value = after;
         }
       };
     }
