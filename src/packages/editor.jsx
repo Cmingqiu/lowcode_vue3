@@ -5,6 +5,7 @@ import useDrag from '../utils/drag';
 import useFocus from '../utils/useFocus';
 import useBlockDrag from '../utils/useBlockDrag';
 import useCommand from '../utils/useCommand';
+import $dialog from '../components/Dialog';
 
 export default defineComponent({
   props: { modelValue: Object },
@@ -56,6 +57,27 @@ export default defineComponent({
         label: '还原',
         class: 'icon-back restore',
         handle: commands.redo
+      },
+      {
+        label: '导入',
+        class: 'icon-back',
+        handle: () => {
+          $dialog({
+            title: '导入json使用',
+            content: '',
+            footer: true
+          });
+        }
+      },
+      {
+        label: '导出',
+        class: 'icon-back',
+        handle: () => {
+          $dialog({
+            title: '导出json使用',
+            content: JSON.stringify(data.value)
+          });
+        }
       }
     ];
 
@@ -63,11 +85,10 @@ export default defineComponent({
       <div class='editor'>
         <header>
           {buttons.map(btn => (
-            <i
-              title={btn.label}
-              class={['editor-btns', btn.class]}
-              onclick={btn.handle}
-            />
+            <div class='editor-btns' onclick={btn.handle}>
+              {btn.label}
+              <i title={btn.label} class={[btn.class]} />
+            </div>
           ))}
         </header>
         <aside>
