@@ -55,7 +55,7 @@ const DialogComponent = defineComponent({
 });
 
 let vm;
-export function $dialog(option) {
+function $dialog(option) {
   if (!vm) {
     let el = document.createElement('div');
     vm = createVNode(DialogComponent, { option }); //创建组件的虚拟节点

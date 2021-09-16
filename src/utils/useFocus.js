@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 
-export default function useFocus(data, cb) {
+export default function useFocus(data, isPreview, cb) {
   let selectIndex = ref(-1); //没有被选中
   //最后选中的组件
   const lastSelectBlock = computed(() => data.value.blocks[selectIndex.value]);
@@ -16,6 +16,7 @@ export default function useFocus(data, cb) {
 
   //按下block组件
   const blockMouseDown = (e, block, index) => {
+    if (isPreview.value) return;
     e.preventDefault();
     e.stopPropagation();
 

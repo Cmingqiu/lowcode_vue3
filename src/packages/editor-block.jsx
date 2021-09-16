@@ -27,11 +27,7 @@ export default defineComponent({
     });
 
     return () => (
-      <div
-        class='editor-block shade-mask'
-        ref={blockRef}
-        style={blockStyle.value}
-      >
+      <div class='editor-block' ref={blockRef} style={blockStyle.value}>
         {renderComponent}
       </div>
     );

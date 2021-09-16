@@ -4,11 +4,11 @@ import events from './event';
 
 //带有历史记录的功能常用这种注册模式
 
-export default function useCommand(data) {
+export default function useCommand(data, focusData) {
   const state = {
     current: -1, //当前指针 前进后退的索引
     queue: [], //所有的操作命令
-    commands: {}, //命令和执行函数的映射表  undo:()=>{} redo:()=>{}
+    commands: {}, //命令和执行函数的映射表 undo:()=>{} redo:()=>{} drag:()=>{}...
     commandsArray: [], //存放所有命令
     destroyArray: [] //销毁队列
   };
@@ -31,7 +31,7 @@ export default function useCommand(data) {
     state.commandsArray.push(command);
   };
 
-  //撤销
+  //撤销(上一步)
   register({
     name: 'undo',
     keyboard: 'ctrl+z',
@@ -48,7 +48,7 @@ export default function useCommand(data) {
       };
     }
   });
-  //还原
+  //还原(下一步)
   register({
     name: 'redo',
     keyboard: 'ctrl+y',
@@ -98,7 +98,7 @@ export default function useCommand(data) {
       };
     }
   });
-
+  //导入更新
   register({
     name: 'updateContainer',
     pushQueue: true,
@@ -113,6 +113,82 @@ export default function useCommand(data) {
         //下一步
         redo() {
           data.value = after;
+        }
+      };
+    }
+  });
+  //置顶:找出未获得焦点的block中zIndex最大的值
+  register({
+    name: 'placeTop',
+    pushQueue: true,
+    execute() {
+      let { focused, unfocused } = focusData.value;
+      const before = deepcopy(data.value.blocks);
+      const after = (() => {
+        let maxZIndex = unfocused.reduce((prev, block) => {
+          return Math.max(prev, block.zIndex);
+        }, -Infinity);
+        focused.forEach(block => (block.zIndex = maxZIndex + 1));
+
+        return data.value.blocks;
+      })();
+
+      return {
+        undo() {
+          data.value = { ...data.value, blocks: before };
+        },
+        redo() {
+          data.value = { ...data.value, blocks: after };
+        }
+      };
+    }
+  });
+  //置底:找出未获得焦点的block中zIndex最小的值；如果minZIndex小于0，将未获得焦点的blocks的index提高
+  register({
+    name: 'placeBottom',
+    pushQueue: true,
+    execute() {
+      let { focused, unfocused } = focusData.value;
+      const before = deepcopy(data.value.blocks);
+      const after = (() => {
+        let minZIndex =
+          unfocused.reduce((prev, block) => {
+            return Math.min(prev, block.zIndex);
+          }, Infinity) - 1;
+
+        if (minZIndex < 0) {
+          const dur = Math.abs(minZIndex);
+          minZIndex = 0;
+          unfocused.forEach(block => (block.zIndex += dur));
+        }
+        focused.forEach(block => (block.zIndex = minZIndex));
+
+        return data.value.blocks;
+      })();
+
+      return {
+        undo() {
+          data.value = { ...data.value, blocks: before };
+        },
+        redo() {
+          data.value = { ...data.value, blocks: after };
+        }
+      };
+    }
+  });
+  //删除
+  register({
+    name: 'delete',
+    pushQueue: true,
+    execute() {
+      const before = deepcopy(data.value.blocks);
+      const after = focusData.value.unfocused;
+      return {
+        undo() {
+          data.value = { ...data.value, blocks: before };
+        },
+        redo() {
+          data.value = { ...data.value, blocks: after };
         }
       };
     }

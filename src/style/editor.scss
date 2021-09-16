@@ -8,6 +8,7 @@
     position: absolute;
     left: 310px;
     right: 310px;
+    text-align: center;
     // width: 100%;
     // padding: 0 310px;
     // box-sizing: border-box;
@@ -21,17 +22,17 @@
       height: 35px;
       line-height: 35px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.5s;
       margin-left: 10px;
       // & + & {
       //   margin-left: 10px;
       // }
       & > i {
         font-size: 20px;
-        font-weight: bold;
+        margin-left: 5px;
       }
       &:hover {
-        // font-size: 25px;
+        font-weight: bold;
       }
       //还原按钮
       & > i.restore {
