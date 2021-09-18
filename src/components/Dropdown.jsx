@@ -1,10 +1,20 @@
-import { defineComponent, createVNode, render, reactive, computed } from 'vue';
+import {
+  defineComponent,
+  createVNode,
+  render,
+  ref,
+  reactive,
+  computed,
+  onMounted,
+  onBeforeUnmount
+} from 'vue';
 
 const DropdownComponent = defineComponent({
   props: {
     option: { type: Object }
   },
   setup(props, ctx) {
+    const dropdownRef = ref(null);
     const state = reactive({
       show: false,
       option: props.option,
@@ -27,9 +37,25 @@ const DropdownComponent = defineComponent({
       }
     });
 
+    const onMouseDown = e => {
+      if (!dropdownRef.value.contains(e.target)) state.show = false;
+    };
+
+    onMounted(() => {
+      document.addEventListener('mousedown', onMouseDown, true); //捕获
+    });
+    onBeforeUnmount(() => {
+      document.removeEventListener('mousedown', onMouseDown, true);
+    });
+
     return () => {
       return (
-        <div class='dropdown' style={style.value} v-show={state.show}>
+        <div
+          class='dropdown'
+          style={style.value}
+          v-show={state.show}
+          ref={dropdownRef}
+        >
           dropdown
         </div>
       );
