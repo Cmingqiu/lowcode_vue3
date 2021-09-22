@@ -6,9 +6,36 @@ import {
   reactive,
   computed,
   onMounted,
-  onBeforeUnmount
+  onBeforeUnmount,
+  provide,
+  inject
 } from 'vue';
 
+/* 下拉项组件 */
+export const DropdownItem = defineComponent({
+  props: {
+    label: {
+      type: String,
+      required: true
+    },
+    handler: {
+      type: Function
+    }
+  },
+  //props无需响应式
+  setup({ label }) {
+    const hide = inject('hideDropdown');
+    return () => {
+      return (
+        <div class='dropdown-item' onClick={hide}>
+          {label}
+        </div>
+      );
+    };
+  }
+});
+
+/* 下拉组件 */
 const DropdownComponent = defineComponent({
   props: {
     option: { type: Object }
@@ -37,6 +64,10 @@ const DropdownComponent = defineComponent({
       }
     });
 
+    provide('hideDropdown', () => {
+      state.show = false;
+    });
+
     const onMouseDown = e => {
       if (!dropdownRef.value.contains(e.target)) state.show = false;
     };
@@ -56,7 +87,7 @@ const DropdownComponent = defineComponent({
           v-show={state.show}
           ref={dropdownRef}
         >
-          dropdown
+          {props.option.content()}
         </div>
       );
     };

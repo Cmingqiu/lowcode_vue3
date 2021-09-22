@@ -17,18 +17,52 @@ function createEditorConfig() {
 
 let registerConfig = createEditorConfig();
 
+const createInputProp = label => {
+  return { type: 'input', label };
+};
+const createColorProp = label => {
+  return { type: 'color', label };
+};
+const createSelectProp = (label, options) => {
+  return { type: 'select', label, options };
+};
+
 registerConfig.register({
   key: 'text',
   label: '文本',
   preview: () => '预览文本',
-  render: () => '渲染文本'
+  render: () => '渲染文本',
+  props: {
+    text: createInputProp('文本内容'),
+    color: createColorProp('字体颜色'),
+    size: createSelectProp('字体大小', [
+      { value: '14px', label: '14px' },
+      { value: '16px', label: '16px' },
+      { value: '20px', label: '20px' }
+    ])
+  }
 });
 
 registerConfig.register({
   key: 'button',
   label: '按钮',
   preview: () => <ElButton>按钮</ElButton>,
-  render: () => <ElButton>按钮</ElButton>
+  render: () => <ElButton>按钮</ElButton>,
+  props: {
+    text: createInputProp('文本内容'),
+    type: createSelectProp('按钮类型', [
+      { value: 'primary', label: '基础' },
+      { value: 'success', label: '成功' },
+      { value: 'warning', label: '警告' },
+      { value: 'danger', label: '危险' },
+      { value: 'text', label: '文本' }
+    ]),
+    size: createSelectProp('按钮尺寸', [
+      { value: 'medium', label: '中等' },
+      { value: 'small', label: '小' },
+      { value: 'mini', label: '极小' }
+    ])
+  }
 });
 
 registerConfig.register({

@@ -19,9 +19,13 @@ export default {
         height: 800,
       },
       blocks: [
-        {top: 100,left: 100,zIndex: 1,key: "text",},
-        {top: 200,left: 200,zIndex: 1,key: "button",},
-        {top: 300,left: 300,zIndex: 1,key: "input",},
+        {top: 100,left: 100,zIndex: 1,key: "text","props":{
+          "text":"文字","color":"#333","size":"16px"
+        }},
+        {top: 200,left: 200,zIndex: 1,key: "button","props":{
+          "text":"文字","type":"primary","size":"medium"
+        }},
+        {top: 300,left: 300,zIndex: 1,key: "input","props":{} },
       ],
     }  */
 

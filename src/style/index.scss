@@ -24,3 +24,9 @@ body,
 @import '../assets/iconfont/iconfont.css';
 @import './editor.scss';
 @import './dropdown.scss';
+
+/* 修复element-plus样式 */
+.el-input-number__decrease,
+.el-input-number__increase {
+  top: 2px;
+}

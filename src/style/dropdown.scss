@@ -1,9 +1,17 @@
 .dropdown {
   position: absolute;
   z-index: 100;
-  width: 150px;
+  min-width: 120px;
   border-radius: 5px;
   background-color: #fff;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-  padding: 10px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  &-item {
+    padding: 8px 5px;
+    cursor: pointer;
+    text-align: center;
+    user-select: none;
+    &:hover {
+      background-color: #cee4f9;
+    }
+  }
 }

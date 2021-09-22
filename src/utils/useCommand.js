@@ -98,7 +98,7 @@ export default function useCommand(data, focusData) {
       };
     }
   });
-  //导入更新
+  //导入更新容器
   register({
     name: 'updateContainer',
     pushQueue: true,
@@ -113,6 +113,33 @@ export default function useCommand(data, focusData) {
         //下一步
         redo() {
           data.value = after;
+        }
+      };
+    }
+  });
+  //导入更新block
+  register({
+    name: 'updateBlock',
+    pushQueue: true,
+    execute(newVal, oldBlock) {
+      const before = deepcopy(data.value.blocks);
+      const after = (() => {
+        const blocks = [...data.value.blocks];
+        const idx = blocks.indexOf(oldBlock);
+        if (idx > -1) {
+          blocks.splice(idx, 1, newVal);
+        }
+        return blocks;
+      })();
+
+      return {
+        //上一步
+        undo() {
+          data.value = { ...data.value, blocks: before };
+        },
+        //下一步
+        redo() {
+          data.value = { ...data.value, blocks: after };
         }
       };
     }

@@ -6,8 +6,9 @@ import useFocus from '../utils/useFocus';
 import useBlockDrag from '../utils/useBlockDrag';
 import useCommand from '../utils/useCommand';
 import $dialog from '../components/Dialog';
-import $dropdown from '../components/Dropdown';
+import $dropdown, { DropdownItem } from '../components/Dropdown';
 import { ElButton } from 'element-plus';
+import editorOperator from './editor-operator';
 
 export default defineComponent({
   props: { modelValue: Object },
@@ -51,9 +52,63 @@ export default defineComponent({
     //4.撤销还原
     const { commands } = useCommand(data, focusData);
 
-    const onContextMenuBlock = e => {
+    const onContextMenuBlock = (e, block) => {
       e.preventDefault();
-      $dropdown({ e, el: e.target });
+      $dropdown({
+        e,
+        el: e.target,
+        content: () => {
+          return (
+            <>
+              <DropdownItem
+                class='icon-control-top'
+                label='置顶'
+                onclick={() => {
+                  commands.placeTop();
+                }}
+              />
+              <DropdownItem
+                label='置底'
+                class='icon-control-bottom'
+                onclick={() => {
+                  commands.placeBottom();
+                }}
+              />
+              <DropdownItem
+                class='icon-yulan'
+                label='查看'
+                onclick={() => {
+                  $dialog({
+                    title: '查看节点数据',
+                    content: JSON.stringify(block)
+                  });
+                }}
+              />
+              <DropdownItem
+                class='icon-export'
+                label='导入'
+                onclick={() => {
+                  $dialog({
+                    title: '导入节点',
+                    content: '',
+                    footer: true,
+                    confirm(text) {
+                      commands.updateBlock(JSON.parse(text), block);
+                    }
+                  });
+                }}
+              />
+              <DropdownItem
+                label='删除'
+                class='icon-cangpeitubiao_shanchu'
+                onclick={() => {
+                  commands.delete();
+                }}
+              />
+            </>
+          );
+        }
+      });
     };
 
     const buttons = [
@@ -174,12 +229,14 @@ export default defineComponent({
                 }}
                 ondragend={dragend}
               >
-                <span class='editor-item-label '>{component.label}</span>
+                <span class='editor-item-label'>{component.label}</span>
                 {component.preview()}
               </div>
             ))}
           </aside>
-          <section>属性控制区</section>
+          <section>
+            <editorOperator block={lastSelectBlock.value} data={data.value} />
+          </section>
           <main>
             {/* 产生滚动条 */}
             <div class='editor-canvas'>
@@ -198,7 +255,7 @@ export default defineComponent({
                     block={block}
                     onmousedown={e => blockMouseDown(e, block, index)}
                     oncontextmenu={e => {
-                      onContextMenuBlock(e);
+                      onContextMenuBlock(e, block);
                     }}
                   />
                 ))}
