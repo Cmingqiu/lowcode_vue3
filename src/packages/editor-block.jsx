@@ -1,6 +1,9 @@
 import { computed, defineComponent, inject, onMounted, ref } from 'vue';
 export default defineComponent({
-  props: { block: Object }, //{  "top": 100, "left": 100, "zIndex": 1, "key": "text",width,height }
+  props: {
+    block: Object, //{  "top": 100, "left": 100, "zIndex": 1, "key": "text",width,height }
+    formData: Object
+  },
   setup(props) {
     const config = inject('config');
     const blockRef = ref(null);
@@ -9,9 +12,6 @@ export default defineComponent({
       left: `${props.block.left}px`,
       zIndex: props.block.zIndex
     }));
-
-    const component = config.componentMap[props.block.key];
-    const renderComponent = component.render();
 
     onMounted(() => {
       //居中渲染拖入的组件
@@ -26,10 +26,27 @@ export default defineComponent({
       props.block.height = offsetHeight;
     });
 
-    return () => (
-      <div class='editor-block' ref={blockRef} style={blockStyle.value}>
-        {renderComponent}
-      </div>
-    );
+    return () => {
+      const component = config.componentMap[props.block.key];
+
+      // {default:'username',start:'',end:''}
+      const renderComponent = component.render({
+        props: props.block.props,
+        model: Object.keys(component.model || {}).reduce((prev, modelName) => {
+          prev[modelName] = {
+            modelValue: props.formData[props.block.model[modelName]],
+            'onUpdate:modelValue': v =>
+              (props.formData[props.block.model[modelName]] = v)
+          };
+          return prev;
+        }, {})
+      });
+
+      return (
+        <div class='editor-block' ref={blockRef} style={blockStyle.value}>
+          {renderComponent}
+        </div>
+      );
+    };
   }
 });

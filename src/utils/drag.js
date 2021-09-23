@@ -35,7 +35,12 @@ export default function useDrag(containerRef, data) {
           zIndex: 1,
           key: currentComponent.key,
           alignCenter: true, // 希望松手的时候你可以居中
-          props: {}
+          props: {},
+          model: {
+            default: 'username',
+            start: 'start',
+            end: 'end'
+          }
         }
       ]
     };

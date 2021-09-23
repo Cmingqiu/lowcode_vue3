@@ -1,5 +1,5 @@
 <template>
-  <Editor v-model="source" />
+  <Editor v-model="source" :formData="formData" />
 </template>
 
 <script>
@@ -13,6 +13,12 @@ export default {
   components: { Editor },
   setup() {
     const source = ref(data);
+    //双向绑定数据源
+    const formData = ref({
+      username: 'username',
+      start: 0,
+      end: 100
+    });
     /*data:  {
       container: {
         width: 800,
@@ -25,14 +31,15 @@ export default {
         {top: 200,left: 200,zIndex: 1,key: "button","props":{
           "text":"文字","type":"primary","size":"medium"
         }},
-        {top: 300,left: 300,zIndex: 1,key: "input","props":{} },
+        {top: 300,left: 300,zIndex: 1,key: "input","props":{},"model":{}},
       ],
     }  */
 
     provide('config', config);
 
     return {
-      source
+      source,
+      formData
     };
   }
 };

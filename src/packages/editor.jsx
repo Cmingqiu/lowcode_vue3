@@ -8,10 +8,13 @@ import useCommand from '../utils/useCommand';
 import $dialog from '../components/Dialog';
 import $dropdown, { DropdownItem } from '../components/Dropdown';
 import { ElButton } from 'element-plus';
-import editorOperator from './editor-operator';
+import EditorOperator from './editor-operator';
 
 export default defineComponent({
-  props: { modelValue: Object },
+  props: {
+    modelValue: Object,
+    formData: Object
+  },
   emits: ['update:modelValue'],
   components: { EditorBlock },
   setup(props, { emit }) {
@@ -61,7 +64,7 @@ export default defineComponent({
           return (
             <>
               <DropdownItem
-                class='icon-control-top'
+                icon='icon-control-top'
                 label='置顶'
                 onclick={() => {
                   commands.placeTop();
@@ -69,13 +72,13 @@ export default defineComponent({
               />
               <DropdownItem
                 label='置底'
-                class='icon-control-bottom'
+                icon='icon-control-bottom'
                 onclick={() => {
                   commands.placeBottom();
                 }}
               />
               <DropdownItem
-                class='icon-yulan'
+                icon='icon-yulan'
                 label='查看'
                 onclick={() => {
                   $dialog({
@@ -85,7 +88,7 @@ export default defineComponent({
                 }}
               />
               <DropdownItem
-                class='icon-export'
+                icon='icon-export'
                 label='导入'
                 onclick={() => {
                   $dialog({
@@ -100,7 +103,7 @@ export default defineComponent({
               />
               <DropdownItem
                 label='删除'
-                class='icon-cangpeitubiao_shanchu'
+                icon='icon-cangpeitubiao_shanchu'
                 onclick={() => {
                   commands.delete();
                 }}
@@ -185,19 +188,20 @@ export default defineComponent({
         <div class='editor'>
           <ElButton
             type='primary'
-            style='position:absolute;left:10px;top:10px;'
+            style='position:absolute;left:10px;top:30px;'
             onclick={() => {
               editorRef.value = true;
             }}
           >
             返回编辑
           </ElButton>
+          {JSON.stringify(props.formData)}
           <main>
             {/* 产生滚动条 */}
             <div class='editor-canvas'>
               <div class='editor-canvas__content' style={contentStyle.value}>
                 {data.value.blocks.map(block => (
-                  <EditorBlock class='shade-mask' block={block} />
+                  <EditorBlock block={block} formData={props.formData} />
                 ))}
               </div>
             </div>
@@ -235,7 +239,12 @@ export default defineComponent({
             ))}
           </aside>
           <section>
-            <editorOperator block={lastSelectBlock.value} data={data.value} />
+            <EditorOperator
+              block={lastSelectBlock.value}
+              data={data.value}
+              updateContainer={commands.updateContainer}
+              updateBlock={commands.updateBlock}
+            />
           </section>
           <main>
             {/* 产生滚动条 */}
@@ -257,6 +266,7 @@ export default defineComponent({
                     oncontextmenu={e => {
                       onContextMenuBlock(e, block);
                     }}
+                    formData={props.formData}
                   />
                 ))}
 

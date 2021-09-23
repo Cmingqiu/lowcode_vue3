@@ -1,4 +1,5 @@
-import { ElButton, ElInput } from 'element-plus';
+import { ElButton, ElInput, ElSelect } from 'element-plus';
+import Range from '../components/Range';
 
 function createEditorConfig() {
   let componentList = []; //用来渲染左侧预览图
@@ -31,7 +32,11 @@ registerConfig.register({
   key: 'text',
   label: '文本',
   preview: () => '预览文本',
-  render: () => '渲染文本',
+  render: ({ props }) => (
+    <span style={{ color: props.color, fontSize: props.size }}>
+      {props.text || '渲染文本'}
+    </span>
+  ),
   props: {
     text: createInputProp('文本内容'),
     color: createColorProp('字体颜色'),
@@ -47,7 +52,11 @@ registerConfig.register({
   key: 'button',
   label: '按钮',
   preview: () => <ElButton>按钮</ElButton>,
-  render: () => <ElButton>按钮</ElButton>,
+  render: ({ props }) => (
+    <ElButton type={props.type} size={props.size}>
+      {props.text || '我的按钮'}
+    </ElButton>
+  ),
   props: {
     text: createInputProp('文本内容'),
     type: createSelectProp('按钮类型', [
@@ -69,7 +78,36 @@ registerConfig.register({
   key: 'input',
   label: '输入框',
   preview: () => <ElInput placeholder='请输入' />,
-  render: () => <ElInput placeholder='请输入' />
+  render: ({ model }) => <ElInput {...model.default} placeholder='请输入' />,
+  model: {
+    default: '绑定字段名'
+  }
+});
+
+registerConfig.register({
+  key: 'select',
+  label: '下拉框',
+  preview: () => <ElSelect modelValue=''></ElSelect>,
+  render: ({ props }) => <ElSelect modelValue=''></ElSelect>,
+  props: {}
+});
+
+registerConfig.register({
+  key: 'range',
+  label: '范围输入框',
+  preview: () => <Range />,
+  render: ({ model }) => (
+    <Range
+      start={model.start.modelValue}
+      end={model.end.modelValue}
+      onUpdate:start={model.start['onUpdate:modelValue']}
+      onUpdate:end={model.end['onUpdate:modelValue']}
+    />
+  ),
+  model: {
+    start: '开始字段名',
+    end: '结束字段名'
+  }
 });
 
 export default registerConfig;

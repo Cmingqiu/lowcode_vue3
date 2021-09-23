@@ -66,8 +66,9 @@
         position: absolute;
         top: 0;
         left: 0;
-        background-color: aqua;
+        background-color: rgb(11, 205, 240);
         color: #fff;
+        padding: 3px;
       }
     }
   }
@@ -86,7 +87,7 @@
       &__content {
         position: relative;
         margin: 20px auto;
-        background-color: yellow;
+        border: 1px solid rgb(11, 205, 240);
         .editor-block {
           user-select: none;
           position: absolute;

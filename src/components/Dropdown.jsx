@@ -18,16 +18,18 @@ export const DropdownItem = defineComponent({
       type: String,
       required: true
     },
+    icon: String,
     handler: {
       type: Function
     }
   },
   //props无需响应式
-  setup({ label }) {
+  setup({ icon, label }) {
     const hide = inject('hideDropdown');
     return () => {
       return (
         <div class='dropdown-item' onClick={hide}>
+          <i class={icon} style='margin-right:5px;' />
           {label}
         </div>
       );
