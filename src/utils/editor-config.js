@@ -84,13 +84,13 @@ registerConfig.register({
   }
 });
 
-registerConfig.register({
+/* registerConfig.register({
   key: 'select',
   label: '下拉框',
   preview: () => <ElSelect modelValue=''></ElSelect>,
   render: ({ props }) => <ElSelect modelValue=''></ElSelect>,
   props: {}
-});
+}); */
 
 registerConfig.register({
   key: 'range',

@@ -21,6 +21,6 @@ git commit -m 'deploy'
 
 # 部署到 https://<USERNAME>.github.io/<REPO>
 # 提交项目到自己仓库的gh-pages分支
-git push -f git@github.com:Cmingqiu/lowcode_vue3.git master:gh-pages
+git push -f git@github.com:Cmingqiu/lowcode_vue3.git master:doc-pages
 
 cd -
